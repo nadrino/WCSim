@@ -1,8 +1,3 @@
-#include "G4ios.hh"
-#include "G4RunManager.hh"
-#include "G4UImanager.hh"
-#include "G4UIterminal.hh"
-#include "G4UItcsh.hh"
 #include "WCSimDetectorConstruction.hh"
 #include "WCSimPhysicsListFactory.hh"
 #include "WCSimPhysicsListFactoryMessenger.hh"
@@ -16,6 +11,13 @@
 #include "WCSimSteppingAction.hh"
 #include "WCSimVisManager.hh"
 #include "WCSimRandomParameters.hh"
+
+#include "G4ios.hh"
+#include "G4RunManager.hh"
+#include "G4UImanager.hh"
+#include "G4UIterminal.hh"
+#include "G4UItcsh.hh"
+#include "G4VisManager.hh"
 
 
 #ifdef G4UI_USE
@@ -95,8 +97,10 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(physFactory);
 
   // Visualization
+#ifdef G4VIS_USE
   G4VisManager* visManager = new WCSimVisManager;
   visManager->Initialize();
+#endif
 
   // Set user action classes
   WCSimPrimaryGeneratorAction* myGeneratorAction = new 
@@ -162,7 +166,9 @@ int main(int argc,char** argv)
 
   }
 
+#ifdef G4VIS_USE
   delete visManager;
+#endif
 
   delete runManager;
   return 0;

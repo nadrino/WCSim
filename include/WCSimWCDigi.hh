@@ -17,11 +17,6 @@
 //for less_equal, bind2nd,...
 #include <functional>
 
-// compose2 is not part of the C++ standard
-#include <ext/functional>
-using __gnu_cxx::compose2;
-
-
 
 class WCSimWCDigi : public G4VDigi
 {
@@ -229,13 +224,19 @@ public:
     std::vector<G4double>::iterator tfirst = time_double.begin();
     std::vector<G4double>::iterator tlast = time_double.end();
     
-    std::vector<G4double>::iterator found = 
-      std::find_if(tfirst,tlast,
-		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4double>(),low),
-			    std::bind2nd(std::less_equal<G4double>(),upevent)
-			    )
-		   );
+//    std::vector<G4double>::iterator found =
+//      std::find_if(tfirst,tlast,
+//		   compose2(std::logical_and<bool>(),
+//			    std::bind2nd(std::greater_equal<G4double>(),low),
+//			    std::bind2nd(std::less_equal<G4double>(),upevent)
+//			    )
+//		   );
+
+    std::vector<G4double>::iterator found =
+        std::find_if(tfirst,tlast, [&](G4double& element_){
+          return element_ >= low and element_ <= upevent;
+        });
+
     if ( found != tlast ) {
       firsttime = *found; // first hit time
     }

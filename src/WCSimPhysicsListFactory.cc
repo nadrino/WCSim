@@ -1,13 +1,19 @@
+#include "G4Version.hh"
 #include <G4ProcessTable.hh>
 #include <G4Neutron.hh>
 #include <G4NeutronHPCapture.hh>
 #include <G4NeutronHPCaptureData.hh>
-#include <G4HadronCaptureProcess.hh>
 #include <G4NeutronRadCapture.hh>
 #include <G4NeutronCaptureXS.hh>
 #include <G4CrossSectionDataSetRegistry.hh>
 #include <G4HadronicInteractionRegistry.hh>
 #include "WCSimPhysicsListFactory.hh"
+
+#if G4VERSION_NUMBER >= 1110
+#include <G4NeutronCaptureProcess.hh>
+#else
+#include <G4HadronCaptureProcess.hh>
+#endif
 
 #include "GdNeutronHPCapture.hh"
 
@@ -69,7 +75,7 @@ void WCSimPhysicsListFactory::ConstructProcess() {
             registry->RemoveMe(registry->FindModel("NeutronHPCapture"));
         }
 
-        G4HadronCaptureProcess *theCaptureProcess = new G4HadronCaptureProcess;
+        auto *theCaptureProcess = new G4NeutronCaptureProcess;
         manager->AddDiscreteProcess(theCaptureProcess);
 
         G4NeutronCaptureXS *xsNeutronCaptureXS = (G4NeutronCaptureXS *) G4CrossSectionDataSetRegistry::Instance()->GetCrossSectionDataSet(G4NeutronCaptureXS::Default_Name());

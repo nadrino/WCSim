@@ -12,29 +12,6 @@
 //for less_equal, bind2nd,...
 #include <functional>
 
-// compose2 is not part of the C++ standard
-// use this kludgy technique to use it
-#include <ext/functional>
-using __gnu_cxx::identity_element;
-using __gnu_cxx::unary_compose;
-using __gnu_cxx::binary_compose;
-using __gnu_cxx::compose1;
-using __gnu_cxx::compose2;
-using __gnu_cxx::identity;
-using __gnu_cxx::select1st;
-using __gnu_cxx::select2nd;
-using __gnu_cxx::project1st;
-using __gnu_cxx::project2nd;
-using __gnu_cxx::constant_void_fun;
-using __gnu_cxx::constant_unary_fun;
-using __gnu_cxx::constant_binary_fun;
-using __gnu_cxx::constant0;
-using __gnu_cxx::constant1;
-using __gnu_cxx::constant2;
-using __gnu_cxx::subtractive_rng;
-using __gnu_cxx::mem_fun1;
-using __gnu_cxx::mem_fun1_ref;
-
 
 
 class WCSimWCHit : public G4VHit
@@ -112,12 +89,7 @@ class WCSimWCHit : public G4VHit
     std::vector<G4double>::iterator tlast = time.end();
   
     std::vector<G4double>::iterator found = 
-      std::find_if(tfirst,tlast,
-		   compose2(std::logical_and<bool>(),
-			    std::bind2nd(std::greater_equal<G4double>(),low),
-			    std::bind2nd(std::less_equal<G4double>(),upevent)
-			    )
-		   );
+      std::find_if(tfirst,tlast,[&](G4double& t_){ return t_ >= low and t_ <= upevent; });
     if ( found != tlast ) {
       firsttime = *found; // first hit time
     }
@@ -141,12 +113,7 @@ class WCSimWCHit : public G4VHit
     
     // return number of hits in the time window...
     
-    G4int number = std::count_if(tfirst,tlast,
-				 compose2(std::logical_and<bool>(),
-					  std::bind2nd(std::greater_equal<G4double>(),low),
-					  std::bind2nd(std::less_equal<G4double>(),mintime)
-					  )
-				 );
+    G4int number = std::count_if(tfirst,tlast, [&](G4double& t_){ return (t_ >= low and t_ <= mintime); });
     
     totalPeInGate = number;
     //    G4cout << "numer = " <<  number <<"\n";

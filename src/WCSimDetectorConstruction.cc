@@ -2,6 +2,7 @@
 #include "WCSimDetectorMessenger.hh"
 #include "WCSimTuningParameters.hh"
 
+#include "G4Version.hh"
 #include "G4Element.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -275,8 +276,11 @@ G4VPhysicalVolume* WCSimDetectorConstruction::Construct()
   // Now set the visualization attributes of the logical volumes.
 
   //   logicWCBox->SetVisAttributes(G4VisAttributes::Invisible);
+#if G4VERSION_NUMBER >= 1110
+  logicExpHall->SetVisAttributes(G4VisAttributes::GetInvisible());
+#else
   logicExpHall->SetVisAttributes(G4VisAttributes::Invisible);
-
+#endif
   //-----------------------------------------------------
   // Create and place the physical Volumes
   //-----------------------------------------------------
